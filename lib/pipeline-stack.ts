@@ -2,7 +2,7 @@ import { Repository } from 'aws-cdk-lib/aws-codecommit'
 import { BuildSpec } from 'aws-cdk-lib/aws-codebuild'
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam'
 import { CodeBuildStep, CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines'
-import { CfnOutput, Stack, type StackProps } from 'aws-cdk-lib'
+import { CfnOutput, SecretValue, Stack, type StackProps } from 'aws-cdk-lib'
 import { type Construct } from 'constructs'
 import { Deployment } from './stages'
 
@@ -10,10 +10,7 @@ export class CodePipelineStack extends Stack {
   constructor (scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
-    const repo = new Repository(this, 'Repository', {
-      repositoryName: 'SampleRepository',
-      description: 'This is sample repository for the project.'
-    })
+    
 
     const validatePolicy = new PolicyStatement({
       actions: [
@@ -27,7 +24,11 @@ export class CodePipelineStack extends Stack {
       crossAccountKeys: true,
       enableKeyRotation: true,
       synth: new ShellStep('Synth', {
-        input: CodePipelineSource.codeCommit(repo, 'main'),
+        input: CodePipelineSource.gitHub("HuanNguyen09/aws-codepipeline-cicd", 'main',
+          {authentication: SecretValue.secretsManager('chatbox/github/token'), // Ensure you have stored your GitHub token in Secrets Manager
+        }
+      ),
+  
         installCommands: [
           'make warming'
         ],
@@ -161,8 +162,8 @@ export class CodePipelineStack extends Stack {
       ]
     })
     // Output
-    new CfnOutput(this, 'RepositoryName', {
-      value: repo.repositoryName
-    })
+    // new CfnOutput(this, 'RepositoryName', {
+    //   value: repo.repositoryName
+    // })
   }
 }
