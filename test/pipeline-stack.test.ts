@@ -27,18 +27,19 @@ describe('Unit tests for the pipeline stack', () => {
           Actions: [{
             ActionTypeId: {
               Category: 'Source',
-              Owner: 'AWS',
-              Provider: 'CodeCommit',
+              Owner: 'ThirdParty',
+              Provider: 'GitHub',
               Version: '1'
             },
             Configuration: {
-              BranchName: 'main',
-              PollForSourceChanges: false,
-              RepositoryName: Match.anyValue()
+              Owner: Match.anyValue(),
+              Repo: Match.anyValue(),
+              Branch: 'main',
+              OAuthToken: Match.anyValue(),
+              PollForSourceChanges: false
             },
             Name: Match.anyValue(),
             OutputArtifacts: Match.anyValue(),
-            RoleArn: Match.anyValue(),
             RunOrder: 1
           }],
           Name: 'Source'
@@ -83,7 +84,7 @@ describe('Unit tests for the pipeline stack', () => {
   })
 
   test('Expected number of IAM roles', () => {
-    const expectedValue = 12
+    const expectedValue = 10
     template.resourceCountIs('AWS::IAM::Role', expectedValue)
   })
 })

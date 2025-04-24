@@ -9,8 +9,6 @@ export class CodePipelineStack extends Stack {
   constructor (scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props)
 
-    
-
     const validatePolicy = new PolicyStatement({
       actions: [
         'cloudformation:DescribeStacks',
@@ -23,11 +21,12 @@ export class CodePipelineStack extends Stack {
       crossAccountKeys: true,
       enableKeyRotation: true,
       synth: new ShellStep('Synth', {
-        input: CodePipelineSource.gitHub("HuanNguyen09/aws-codepipeline-cicd", 'main',
-          {authentication: SecretValue.secretsManager('chatbox/github/token'), // Ensure you have stored your GitHub token in Secrets Manager
-        }
-      ),
-  
+        input: CodePipelineSource.gitHub('HuanNguyen09/aws-codepipeline-cicd', 'main',
+          {
+            authentication: SecretValue.secretsManager('chatbox/github/token')
+          }
+        ),
+
         installCommands: [
           'make warming'
         ],
@@ -160,6 +159,5 @@ export class CodePipelineStack extends Stack {
         })
       ]
     })
-
   }
 }
