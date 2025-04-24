@@ -1,8 +1,7 @@
-import { Repository } from 'aws-cdk-lib/aws-codecommit'
 import { BuildSpec } from 'aws-cdk-lib/aws-codebuild'
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam'
 import { CodeBuildStep, CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines'
-import { CfnOutput, SecretValue, Stack, type StackProps } from 'aws-cdk-lib'
+import { SecretValue, Stack, type StackProps } from 'aws-cdk-lib'
 import { type Construct } from 'constructs'
 import { Deployment } from './stages'
 
@@ -100,7 +99,7 @@ export class CodePipelineStack extends Stack {
             phases: {
               install: {
                 'runtime-versions': {
-                  ruby: '2.6'
+                  ruby: '2.6.10'
                 }
               }
             }
@@ -161,9 +160,6 @@ export class CodePipelineStack extends Stack {
         })
       ]
     })
-    // Output
-    // new CfnOutput(this, 'RepositoryName', {
-    //   value: repo.repositoryName
-    // })
+
   }
 }
